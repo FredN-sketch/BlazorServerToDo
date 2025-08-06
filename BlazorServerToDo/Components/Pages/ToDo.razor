@@ -1,11 +1,13 @@
 ﻿@page "/todo"
 @using System.ComponentModel.DataAnnotations
-@* @using BlazorServerToDo.Models
-@using BlazorServerToDo.Services
-@inject IToDoService ToDoService *@
+@using BlazorServerToDo.Models
+@rendermode InteractiveServer
+
+@* @using BlazorServerToDo.Services
+@inject IToDoService ToDoService  *@
 
 <h3>ToDo</h3>
-<EditForm Model="@newToDo" OnValidSubmit="AddToDo">
+<EditForm Model="@newToDo" OnSubmit=@FormSubmitted FormName="Register">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="mb-3">
@@ -21,21 +23,15 @@
     <button type="submit" class="btn btn-primary">Add ToDo</button>
 </EditForm>
 @code {
-    private ToDoItemModel newToDo = new ToDoItemModel();
-    public class ToDoItemModel 
-    {
-        [Required(ErrorMessage = "Title is required.")]
-        public string Title { get; set; }
-        [Required(ErrorMessage = "Description is required.")]
-        public string Description { get; set; }
-    }
-    private void AddToDo(EditContext editContext)
+    private ToDoItem newToDo = new ToDoItem();
+   
+    private void FormSubmitted(EditContext editContext)
     {
         bool formIsValidated = editContext.Validate();
         if (formIsValidated)
         {
-            var validToDoItem = (ToDoItemModel)editContext.Model;
-            ToDoItemModel newToDoItem = new()
+            var validToDoItem = (ToDoItem)editContext.Model;
+            ToDoItem newToDoItem = new()
             {
                 Title = validToDoItem.Title,
                 Description = validToDoItem.Description
