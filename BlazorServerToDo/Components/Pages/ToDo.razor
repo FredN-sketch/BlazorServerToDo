@@ -1,0 +1,48 @@
+﻿@page "/todo"
+@using System.ComponentModel.DataAnnotations
+@* @using BlazorServerToDo.Models
+@using BlazorServerToDo.Services
+@inject IToDoService ToDoService *@
+
+<h3>ToDo</h3>
+<EditForm Model="@newToDo" OnValidSubmit="AddToDo">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="@newToDo.Title" />
+        <ValidationMessage For="@(() => newToDo.Title)" />
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="@newToDo.Description" />
+        <ValidationMessage For="@(() => newToDo.Description)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add ToDo</button>
+</EditForm>
+@code {
+    private ToDoItemModel newToDo = new ToDoItemModel();
+    public class ToDoItemModel 
+    {
+        [Required(ErrorMessage = "Title is required.")]
+        public string Title { get; set; }
+        [Required(ErrorMessage = "Description is required.")]
+        public string Description { get; set; }
+    }
+    private void AddToDo(EditContext editContext)
+    {
+        bool formIsValidated = editContext.Validate();
+        if (formIsValidated)
+        {
+            var validToDoItem = (ToDoItemModel)editContext.Model;
+            ToDoItemModel newToDoItem = new()
+            {
+                Title = validToDoItem.Title,
+                Description = validToDoItem.Description
+            };
+            // GlobalToDoList.Products.Add(newToDoItem);
+            // Products.Add(newProduct);
+            StateHasChanged();
+        }
+    }
+}
