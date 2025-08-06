@@ -1,4 +1,6 @@
 using BlazorServerToDo.Components;
+using BlazorServerToDo.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorServerToDo
 {
@@ -11,7 +13,9 @@ namespace BlazorServerToDo
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            builder.Services.AddDbContext<MyDbContext>(options =>
+                options.UseSqlServer(connectionString));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
