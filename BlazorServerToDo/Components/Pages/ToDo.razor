@@ -1,10 +1,9 @@
 ﻿@page "/todo"
 @using System.ComponentModel.DataAnnotations
 @using BlazorServerToDo.Models
+@using BlazorServerToDo.Services
 @rendermode InteractiveServer
-
-@* @using BlazorServerToDo.Services
-@inject IToDoService ToDoService  *@
+@inject IToDoService ToDoService  
 
 <h3>ToDo</h3>
 <EditForm Model="@newToDo" OnSubmit=@FormSubmitted FormName="Register">
@@ -34,7 +33,8 @@
             ToDoItem newToDoItem = new()
             {
                 Title = validToDoItem.Title,
-                Description = validToDoItem.Description
+                Description = validToDoItem.Description,
+                Date = DateTime.Now
             };
             // GlobalToDoList.Products.Add(newToDoItem);
             // Products.Add(newProduct);
