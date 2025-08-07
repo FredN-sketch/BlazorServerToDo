@@ -21,10 +21,37 @@
     </div>
     <button type="submit" class="btn btn-primary">Add ToDo</button>
 </EditForm>
+<hr />
+
+@if (_rendered)
+{
+    @foreach (var item in ToDoList)
+    {
+        <p>
+            <button @onclick="() => ToDoDelete(item.Id)">Ta bort</button>
+            @item.Title - @item.Date
+        </p>
+    }
+}
+else
+{
+    <p>Laddar in drickorna...</p>
+}
+
+
+
 @code {
-    private ToDoItem newToDo = new ToDoItem();
-   
-    private void FormSubmitted(EditContext editContext)
+    public ToDoItem newToDo = new ToDoItem();
+    public List<ToDoItem> ToDoList { get; set; } = new List<ToDoItem>();
+    private bool _rendered = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ToDoList = await ToDoService.GetToDoItems();
+        _rendered = true;
+    }
+
+    private async Task FormSubmitted(EditContext editContext)
     {
         bool formIsValidated = editContext.Validate();
         if (formIsValidated)
@@ -36,9 +63,19 @@
                 Description = validToDoItem.Description,
                 Date = DateTime.Now
             };
-            // GlobalToDoList.Products.Add(newToDoItem);
-            // Products.Add(newProduct);
-            StateHasChanged();
+            await ToDoService.SaveItem(newToDoItem);
+            ToDoList = await ToDoService.GetToDoItems();
+           // ToDoList.Add(newToDoItem);
+            
+
+           
         }
     }
+    private async Task ToDoDelete(int id)
+    {
+        await ToDoService.DeleteItem(id);
+        ToDoList = await ToDoService.GetToDoItems();
+    
+    }
+
 }

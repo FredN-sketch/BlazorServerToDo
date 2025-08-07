@@ -15,13 +15,13 @@ namespace BlazorServerToDo.Services
         {
             return await _db.ToDoItems.ToListAsync();
         }
-        public async Task SaveIntake(ToDoItem item)
+        public async Task SaveItem(ToDoItem item)
         {
             _db.Add(item);
             await _db.SaveChangesAsync();
         }
 
-        public async Task DeleteIntake(int id)
+        public async Task DeleteItem(int id)
         {
             _db.ToDoItems.Remove(_db.ToDoItems.Single(x => x.Id == id));
             await _db.SaveChangesAsync();
